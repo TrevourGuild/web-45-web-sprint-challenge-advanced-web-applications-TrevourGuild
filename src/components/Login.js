@@ -1,23 +1,74 @@
 import React from "react";
+import axiosWithAuth from '../helpers/axiosWithAuth';
 
-const Login = () => {
+class Login extends React.Component {
   // make a post request to retrieve a token from the api
   // when you have handled the token, navigate to the BubblePage route
 
-  const error = "";
+  state = {
+    credentials:{
+      username: '',
+      password: '',
+      error: ''
+    }
+  }
+
   //replace with error state
 
-  return (
-    <div>
-      <h1>Welcome to the Bubble App!</h1>
-      <div data-testid="loginForm" className="login-form">
-        <h2>Build login form here</h2>
-      </div>
+  handleChange = e =>{
+    this.setState({
+      credentials: {
+        ...this.state.credentials,
+        [e.target.name]: e.target.value
+      }
+    })
+  }
 
-      <p id="error" className="error">{error}</p>
-    </div>
-  );
-};
+  login = e =>{
+    e.preventDefault()
+
+    axiosWithAuth().post('/login', this.state.credentials)
+    .then(res =>{
+        localStorage.setItem('token', res.data.token)
+        localStorage.setItem('role', res.data.role)
+        localStorage.setItem('username', res.data.username)
+        localStorage.setItem('password', res.data.password)
+        this.props.history.push('/protected');
+    })
+    .catch(err =>{
+        console.log(err)
+    })
+}
+
+  render(){
+    return (
+        <div>
+            <form onSubmit={this.login}>
+                <div className = 'userPass'>
+                <input className = 'user'
+                    type = 'text'
+                    id = 'username'
+                    name = 'username'
+                    value = {this.state.credentials.username}
+                    placeholder = 'Username'
+                    onChange = {this.handleChange}
+                />
+                <input
+                    type = 'password'
+                    id = 'password'
+                    name = 'password'
+                    value = {this.state.credentials.password}
+                    placeholder = 'Password'
+                    onChange = {this.handleChange}
+                />
+                </div>
+                <button>Login</button>
+                
+            </form>
+        </div>
+    );
+  };
+}
 
 export default Login;
 
