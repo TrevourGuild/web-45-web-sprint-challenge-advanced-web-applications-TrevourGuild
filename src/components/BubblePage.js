@@ -16,11 +16,12 @@ const BubblePage = () => {
   };
 
   const deleteColor = (colorToDelete) => {
+    setColors(colors.filter(item=>(item.colorToDelete !== Number(colorToDelete))))
   };
 
   return (
     <div className="container">
-      <ColorList colors={colors} editing={editing} toggleEdit={toggleEdit} saveEdit={saveEdit} deleteColor={deleteColor}/>
+      <ColorList colors={colors} setColors = {setColors} editing={editing} toggleEdit={toggleEdit} saveEdit={saveEdit} deleteColor={deleteColor}/>
       <Bubbles colors={colors}/>
       
     </div>
